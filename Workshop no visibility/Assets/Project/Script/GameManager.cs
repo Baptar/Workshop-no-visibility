@@ -4,11 +4,14 @@ using UnityEngine;
 public enum E_State
 {
     None,
-    AudioAskName,
+    ExplicationTuto,// first audio, explain everything and ask for name
+    WaitForName,
     SayingName,
-    ExplicationTuto,
-    ChooseObject,
-    RecObjectSound
+    WeHaveNameDoNext, // after rec name -> continue 
+    WaitChooseObject,
+    RecObjectSound,
+    YouCanLeave,
+    
 }
 
 public class GameManager : MonoBehaviour
@@ -33,15 +36,15 @@ public class GameManager : MonoBehaviour
     public E_State state = E_State.None;
     
     // audio
-    private AudioClip audioAskName;                 // bienvenue dis ton nom
     private AudioClip audioExplicationFirst;        // choisis une combinaison de 4 btn et associe leur à chacun un son
     private AudioClip audioExplicationOthers;       // écoute ce son et essaye de trouver l'objet correspondant
-    private AudioClip audioChooseObject;            // tu as sélectionner un obj, associe lui maintenant un son
-    private AudioClip audioSelectAllObject;         // tu peux maintenant sortir de la piece
-    //private AudioClip audioEndOfTheGame;          // fin de la partie mouhahahah (tu gères pablo)
+    private AudioClip audioAfterName;               // tu as sélectionner un obj, associe lui maintenant un son
+    private AudioClip audioHaveSelectedAllObject;   // tu peux maintenant sortir de la piece
+    private AudioClip audioEndOfTheGame;            // fin de la partie mouhahahah (tu gères pablo)
     
     // actual var
     private int actualPlayer = -1;
+    private int buttonsSelected = -1;
     
     
 
@@ -69,17 +72,26 @@ public class GameManager : MonoBehaviour
         playersName = new AudioClip[playerNumber];
     }
 
-
-    public IEnumerator StartAudioAskName()
+    public IEnumerator StartAudioExplication()
     {
-        state = E_State.AudioAskName;
+        state = E_State.ExplicationTuto;
         actualPlayer++;
-        audioSource.PlayOneShot(audioAskName);
-        yield return new WaitForSeconds(audioAskName.length);
-        StartRecPlayerName(actualPlayer);
+        buttonsSelected = 0;
+        
+        AudioClip clip = actualPlayer == 0 ? audioExplicationFirst : audioExplicationOthers;
+        audioSource.PlayOneShot(clip);
+        yield return new WaitForSeconds(clip.length);
+        
+        // case other players and have to play audio first obj
+        /*if (actualPlayer > 0)
+        {
+            audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1][0]);
+            yield return new WaitForSeconds(playerAudioButton[actualPlayer - 1][0].length);
+        }*/
+        state = E_State.WaitForName;
     }
-
-    private void StartRecPlayerName(int player)
+    
+    public void StartRecPlayerName()
     {
         state = E_State.SayingName;
         recordedClip.StartRecording();
@@ -87,25 +99,57 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator StopRecPlayerName()
     {
-        state = E_State.ExplicationTuto;
-        AudioClip clip = actualPlayer == 0 ? audioExplicationFirst : audioExplicationOthers;
-        audioSource.PlayOneShot(clip);
-        yield return new WaitForSeconds(clip.length);
+        playersName[actualPlayer] = recordedClip.StopRecording();
         
-        StartChoosingObject();
-    }
-
-    private void StartChoosingObject()
-    {
-        state = E_State.ChooseObject;
-
+        state = E_State.WeHaveNameDoNext;
+        audioSource.PlayOneShot(audioAfterName);
+        yield return new WaitForSeconds(audioAfterName.length);
+        
+        // case other players and have to play audio first obj
         if (actualPlayer > 0)
         {
-            //audioSource.PlayOneShot();
+            audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1][0]);
+            yield return new WaitForSeconds(playerAudioButton[actualPlayer - 1][0].length);
+        }
+        state = E_State.WaitChooseObject;
+    }
+    
+    public void StartRecChooseObject()
+    {
+        state = E_State.RecObjectSound;
+        recordedClip.StartRecording();
+    }
+
+    public void StopRecChooseObject(int button)
+    {
+        playerAudioButton[actualPlayer][buttonsSelected] = recordedClip.StopRecording();
+        playerButton[actualPlayer][buttonsSelected] = button;
+        buttonsSelected++;
+
+        if (buttonsSelected >= 4)
+        {
+            PlayerFinished();
+        }
+
+        else
+        {
+            state = E_State.WaitChooseObject;
         }
     }
 
-    private void EndScrren()
+    private void PlayerFinished()
+    {
+        if (actualPlayer >= 3)
+        {
+            GameFinished();
+        }
+        else
+        {
+            //ask to leave the room
+        }
+    }
+
+    private void GameFinished()
     {
         
     }
