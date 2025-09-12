@@ -2138,7 +2138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758430a15f905284884aa7f15af6bdfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bouttonAudio: {fileID: 8300000, guid: 13dd54e2a1dd4134183878c60932ca7c, type: 3}
 --- !u!1 &1730978590
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,12 +2295,9 @@ MonoBehaviour:
   state: 0
   audioExplicationFirst: {fileID: 8300000, guid: 4f3a064ec6f76d54c9b9e39d95166d7f, type: 3}
   audioExplicationOthers: {fileID: 8300000, guid: 86462f82d2bb7ec4280c0c1ffe941218, type: 3}
-  audioAfterName: {fileID: 8300000, guid: 1b0992f926a8c6e48a4de3e459a337ec, type: 3}
+  audioAfterName: {fileID: 0}
   audioHaveSelectedAllObject: {fileID: 8300000, guid: ffb65f4e8c38df047a62f108cca1ad7e, type: 3}
-  audioStartRecButton: {fileID: 8300000, guid: 756e3d1cbbf50ed498645b4efd4f6277, type: 3}
-  audioStopRecButton: {fileID: 8300000, guid: 99b038cad4d62fb41a1656a6d0706181, type: 3}
-  actualPlayer: -1
-  buttonsSelected: -1
+  audioEndOfTheGame: {fileID: 8300000, guid: 1b0992f926a8c6e48a4de3e459a337ec, type: 3}
 --- !u!1 &1956246165
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,10 +8,6 @@ public class FinDePartie : MonoBehaviour
     
     public Transform[] spawnPoints = new Transform[20];
     
-    public static FinDePartie instance;
-    
-    private void Awake() => instance = this;
-    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
