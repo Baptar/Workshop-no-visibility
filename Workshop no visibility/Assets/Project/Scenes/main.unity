@@ -1870,7 +1870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bouttonAudio: {fileID: 8300000, guid: 13dd54e2a1dd4134183878c60932ca7c, type: 3}
-  alreadyUsedButton: {fileID: 0}
+  alreadyUsedButton: {fileID: 8300000, guid: 8bfdf3794866641468c4a5c8c34110e9, type: 3}
   canUseButton: 0000000000
 --- !u!1 &1730978590
 GameObject:
