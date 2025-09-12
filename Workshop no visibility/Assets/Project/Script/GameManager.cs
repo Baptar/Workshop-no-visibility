@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour
         playerAudioButton[actualPlayer].clips[buttonsSelected] = recordedClip.StopRecording();
         playerButton[actualPlayer].buttons[buttonsSelected] = button;
         Debug.Log("le joueur " + actualPlayer + " a associé le bouton " + playerButton[actualPlayer].buttons[buttonsSelected]);
-        InputManager.instance.SetUsableButton(button, false);
+        InputManager.instance.SetUsableButton(button-1, false);
         
         buttonsSelected++;
 
@@ -171,12 +171,12 @@ public class GameManager : MonoBehaviour
             audioSource.PlayOneShot(audioHaveSelectedAllObject);
             yield return new WaitForSeconds(audioHaveSelectedAllObject.length);
             state = actualPlayer >= 3 ? E_State.WaitEndScreen : E_State.None;
+            InputManager.instance.ResetUsableButtons();
         }
     }
 
     public void GameFinished()
     {
         state = E_State.EndScreen;
-        //FinDePartie.instance.
     }
 }

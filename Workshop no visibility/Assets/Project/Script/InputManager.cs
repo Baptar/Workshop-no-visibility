@@ -4,12 +4,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
     
-    private bool needDoubleClick = false;
-    private float timeBetweenDoubleClick = 1.0f;
-    private float actualTime = 0.0f;
-
-    private int oldButtonClicked = -1;
-    
     [SerializeField] private AudioClip bouttonAudio;
     [SerializeField] private AudioClip alreadyUsedButton;
     
@@ -17,6 +11,11 @@ public class InputManager : MonoBehaviour
     public bool[] canUseButton = new bool[5];
 
     private void Awake() => instance = this;
+
+    private void Start()
+    {
+        ResetUsableButtons();
+    }
     
     public void ResetUsableButtons()
     {
@@ -36,6 +35,7 @@ public class InputManager : MonoBehaviour
         if (!canUseButton[index])
         {
             GameManager.instance.audioSource.PlayOneShot(alreadyUsedButton);
+            Debug.Log("alreadyUsedButton");
             return;
         }
         
@@ -53,7 +53,7 @@ public class InputManager : MonoBehaviour
                 StartCoroutine(gameManager.StopRecPlayerName());
                 break;
             case E_State.RecObjectSound:
-                gameManager.StopRecChooseObject(index);
+                gameManager.StopRecChooseObject(index + 1);
                 break;
             case E_State.WaitEndScreen:
                 gameManager.GameFinished();
