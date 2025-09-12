@@ -178,5 +178,6 @@ public class GameManager : MonoBehaviour
     public void GameFinished()
     {
         state = E_State.EndScreen;
+        FinDePartie.instance.StartEcranDeFin();
     }
 }
