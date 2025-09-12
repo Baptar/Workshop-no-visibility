@@ -20,11 +20,11 @@ public class GameManager : MonoBehaviour
     /// Variables
     /// </summary>
     public static GameManager instance;
-    private int playerNumber = 4;
+    private int playerNumber = 5;
     private int buttonToSelectNumber = 4;
     
     // ref
-    public AudioSource audioSource;
+    [SerializeField] private AudioSource audioSource;
     [SerializeField] private RecMicro recordedClip;
     
     // array
@@ -36,13 +36,11 @@ public class GameManager : MonoBehaviour
     public E_State state = E_State.None;
     
     // audio
-    [SerializeField] private AudioClip audioExplicationFirst;        // choisis une combinaison de 4 btn et associe leur à chacun un son
-    [SerializeField] private AudioClip audioExplicationOthers;       // écoute ce son et essaye de trouver l'objet correspondant
-    [SerializeField] private AudioClip audioAfterName;               // tu as sélectionner un obj, associe lui maintenant un son
-    [SerializeField] private AudioClip audioHaveSelectedAllObject;   // tu peux maintenant sortir de la piece
-    [SerializeField] private AudioClip audioEndOfTheGame;            // fin de la partie mouhahahah (tu gères pablo)
-    [SerializeField] private AudioClip audioStartRecButton;            // fin de la partie mouhahahah (tu gères pablo)
-    [SerializeField] private AudioClip audioStopRecButton;            // fin de la partie mouhahahah (tu gères pablo)
+    private AudioClip audioExplicationFirst;        // choisis une combinaison de 4 btn et associe leur à chacun un son
+    private AudioClip audioExplicationOthers;       // écoute ce son et essaye de trouver l'objet correspondant
+    private AudioClip audioAfterName;               // tu as sélectionner un obj, associe lui maintenant un son
+    private AudioClip audioHaveSelectedAllObject;   // tu peux maintenant sortir de la piece
+    private AudioClip audioEndOfTheGame;            // fin de la partie mouhahahah (tu gères pablo)
     
     // actual var
     private int actualPlayer = -1;
@@ -95,7 +93,6 @@ public class GameManager : MonoBehaviour
     
     public void StartRecPlayerName()
     {
-        audioSource.PlayOneShot(audioStartRecButton);
         state = E_State.SayingName;
         recordedClip.StartRecording();
     }
@@ -119,15 +116,12 @@ public class GameManager : MonoBehaviour
     
     public void StartRecChooseObject()
     {
-        audioSource.PlayOneShot(audioStartRecButton);
         state = E_State.RecObjectSound;
         recordedClip.StartRecording();
     }
 
     public void StopRecChooseObject(int button)
     {
-        audioSource.PlayOneShot(audioStopRecButton);
-        
         playerAudioButton[actualPlayer][buttonsSelected] = recordedClip.StopRecording();
         playerButton[actualPlayer][buttonsSelected] = button;
         buttonsSelected++;
