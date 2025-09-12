@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
+    
     private bool needDoubleClick = false;
     private float timeBetweenDoubleClick = 1.0f;
     private float actualTime = 0.0f;
@@ -9,14 +11,35 @@ public class InputManager : MonoBehaviour
     private int oldButtonClicked = -1;
     
     [SerializeField] private AudioClip bouttonAudio;
+    [SerializeField] private AudioClip alreadyUsedButton;
     
-    private void Update()
+    // DEBUG
+    public bool[] canUseButton = new bool[5];
+
+    private void Awake() => instance = this;
+    
+    public void ResetUsableButtons()
     {
-        
+        for (int i = 0; i < canUseButton.Length; i++)
+        {
+            canUseButton[i] = true;
+        }
+    }
+
+    public void SetUsableButton(int indexButton, bool value)
+    {
+        canUseButton[indexButton] = value;
     }
     
     public void ReceiveInput(int index)
     {
+        if (!canUseButton[index])
+        {
+            GameManager.instance.audioSource.PlayOneShot(alreadyUsedButton);
+            return;
+        }
+        
+        
         Debug.Log("receive input from button " + index);
         GameManager.instance.audioSource.PlayOneShot(bouttonAudio);
         
@@ -40,6 +63,12 @@ public class InputManager : MonoBehaviour
 
     public void ReceiveDoubleClick(int index)
     {
+        if (!canUseButton[index])
+        {
+            GameManager.instance.audioSource.PlayOneShot(alreadyUsedButton);
+            return;
+        }
+        
         Debug.Log("receive double click from button " + index);
         GameManager.instance.audioSource.PlayOneShot(bouttonAudio);
         

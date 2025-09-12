@@ -43,11 +43,11 @@ public class FinDePartie : MonoBehaviour
             {
                 //Je prends le clip audio avec d'abord le numéro du bouton appuyé chronologiquement (le 1er boutton du joueur x)
                 //puis le joueur qui a enregistré le son (numéro défini par ordre de passage)
-                clipToSet = gameManager.playerAudioButton[tour][joueur];
+                clipToSet = gameManager.playerAudioButton[tour].clips[joueur];
         
                 //je définis le spawnpoint avec d'abord le "tour" qui est en fait le joueur dans mon cas cf schéma feutre marron moche
                 //puis le bouton appuyé en suivant la logique de baptiste
-                espace = GetSpawnPoint(tour, gameManager.playerButton[tour][joueur]);
+                espace = GetSpawnPoint(tour, gameManager.playerButton[tour].buttons[joueur]);
         
                 //J'instantie mon nouveau boutton a ma nouvelle loc et je lui attribue mon clip défini plus tot
                 GameObject newBoutton = Instantiate(bouttons[tour], espace.position, espace.rotation);

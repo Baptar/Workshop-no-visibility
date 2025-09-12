@@ -28,9 +28,22 @@ public class GameManager : MonoBehaviour
     public AudioSource audioSource;
     [SerializeField] private RecMicro recordedClip;
     
+    [System.Serializable]
+    public class AudioClipRow
+    {
+        public AudioClip[] clips;
+    }
+    
+    [System.Serializable]
+    public class ButtonIntRow
+    {
+        public int[] buttons;
+    }
+    
+    
     // array
-    public int[][] playerButton;
-    public AudioClip[][] playerAudioButton;
+    public ButtonIntRow[] playerButton;
+    public AudioClipRow[] playerAudioButton;
     public AudioClip[] playersName;
     
     // state
@@ -61,17 +74,19 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // init player button array
-        playerButton = new int[playerNumber][];
+        playerButton = new ButtonIntRow[playerNumber];
         for (int i = 0; i < playerNumber; i++)
         {
-            playerButton[i] = new int[buttonToSelectNumber];
+            playerButton[i] = new ButtonIntRow();
+            playerButton[i].buttons = new int[buttonToSelectNumber];
         }
         
         // init player audio array
-        playerAudioButton = new AudioClip[playerNumber][];
+        playerAudioButton = new AudioClipRow[playerNumber];
         for (int i = 0; i < playerNumber; i++)
         {
-            playerAudioButton[i] = new AudioClip[buttonToSelectNumber];
+            playerAudioButton[i] = new AudioClipRow();
+            playerAudioButton[i].clips = new AudioClip[buttonToSelectNumber];
         }
         
         playersName = new AudioClip[playerNumber];
@@ -82,17 +97,13 @@ public class GameManager : MonoBehaviour
         state = E_State.ExplicationTuto;
         actualPlayer++;
         buttonsSelected = 0;
+
+        InputManager.instance.ResetUsableButtons();
         
         AudioClip clip = actualPlayer == 0 ? audioExplicationFirst : audioExplicationOthers;
         if (clip) audioSource.PlayOneShot(clip);
         yield return new WaitForSeconds(clip.length);
-        
-        // case other players and have to play audio first obj
-        /*if (actualPlayer > 0)
-        {
-            audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1][0]);
-            yield return new WaitForSeconds(playerAudioButton[actualPlayer - 1][0].length);
-        }*/
+
         state = E_State.WaitForName;
     }
     
@@ -115,7 +126,7 @@ public class GameManager : MonoBehaviour
         // case other players and have to play audio first obj
         if (actualPlayer > 0)
         {
-            audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1][0]);
+            audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1].clips[0]);
             state = E_State.WaitChooseObject;
             Debug.Log("HIIIIIIIIIIIIIII");
         }
@@ -134,9 +145,10 @@ public class GameManager : MonoBehaviour
     {
         if (audioStopRecButton) audioSource.PlayOneShot(audioStopRecButton);
         
-        playerAudioButton[actualPlayer][buttonsSelected] = recordedClip.StopRecording();
-        playerButton[actualPlayer][buttonsSelected] = button;
-        Debug.Log("le joueur " + actualPlayer + " a associé le bouton " + playerButton[actualPlayer][buttonsSelected]);
+        playerAudioButton[actualPlayer].clips[buttonsSelected] = recordedClip.StopRecording();
+        playerButton[actualPlayer].buttons[buttonsSelected] = button;
+        Debug.Log("le joueur " + actualPlayer + " a associé le bouton " + playerButton[actualPlayer].buttons[buttonsSelected]);
+        InputManager.instance.SetUsableButton(button, false);
         
         buttonsSelected++;
 
