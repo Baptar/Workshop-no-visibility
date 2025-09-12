@@ -2293,6 +2293,11 @@ MonoBehaviour:
   recordedClip: {fileID: 1868454220}
   playersName: []
   state: 0
+  audioExplicationFirst: {fileID: 8300000, guid: 4f3a064ec6f76d54c9b9e39d95166d7f, type: 3}
+  audioExplicationOthers: {fileID: 8300000, guid: 86462f82d2bb7ec4280c0c1ffe941218, type: 3}
+  audioAfterName: {fileID: 0}
+  audioHaveSelectedAllObject: {fileID: 8300000, guid: ffb65f4e8c38df047a62f108cca1ad7e, type: 3}
+  audioEndOfTheGame: {fileID: 8300000, guid: 1b0992f926a8c6e48a4de3e459a337ec, type: 3}
 --- !u!1 &1956246165
 GameObject:
   m_ObjectHideFlags: 0

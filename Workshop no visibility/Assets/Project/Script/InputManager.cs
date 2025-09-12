@@ -8,6 +8,8 @@ public class InputManager : MonoBehaviour
 
     private int oldButtonClicked = -1;
     
+    [SerializeField] private AudioClip bouttonAudio;
+    
     private void Update()
     {
         
@@ -16,6 +18,7 @@ public class InputManager : MonoBehaviour
     public void ReceiveInput(int index)
     {
         Debug.Log("receive input from button " + index);
+        GameManager.instance.audioSource.PlayOneShot(bouttonAudio);
         
         GameManager gameManager = GameManager.instance;
         switch (gameManager.state)
@@ -35,6 +38,7 @@ public class InputManager : MonoBehaviour
     public void ReceiveDoubleClick(int index)
     {
         Debug.Log("receive double click from button " + index);
+        GameManager.instance.audioSource.PlayOneShot(bouttonAudio);
         
         GameManager gameManager = GameManager.instance;
         switch (gameManager.state)
