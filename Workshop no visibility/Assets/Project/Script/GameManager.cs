@@ -11,7 +11,8 @@ public enum E_State
     WaitChooseObject,
     RecObjectSound,
     YouCanLeave,
-    
+    WaitEndScreen,
+    EndScreen
 }
 
 public class GameManager : MonoBehaviour
@@ -40,13 +41,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip audioExplicationOthers;       // écoute ce son et essaye de trouver l'objet correspondant
     [SerializeField] private AudioClip audioAfterName;               // tu as sélectionner un obj, associe lui maintenant un son
     [SerializeField] private AudioClip audioHaveSelectedAllObject;   // tu peux maintenant sortir de la piece
-    [SerializeField] private AudioClip audioEndOfTheGame;            // fin de la partie mouhahahah (tu gères pablo)
+    
     [SerializeField] private AudioClip audioStartRecButton;            // fin de la partie mouhahahah (tu gères pablo)
     [SerializeField] private AudioClip audioStopRecButton;            // fin de la partie mouhahahah (tu gères pablo)
     
+    
+    // DEBUG
     // actual var
-    private int actualPlayer = -1;
-    private int buttonsSelected = -1;
+    public int actualPlayer = -1;
+    public int buttonsSelected = -1;
     
     
 
@@ -81,7 +84,7 @@ public class GameManager : MonoBehaviour
         buttonsSelected = 0;
         
         AudioClip clip = actualPlayer == 0 ? audioExplicationFirst : audioExplicationOthers;
-        audioSource.PlayOneShot(clip);
+        if (clip) audioSource.PlayOneShot(clip);
         yield return new WaitForSeconds(clip.length);
         
         // case other players and have to play audio first obj
@@ -93,9 +96,10 @@ public class GameManager : MonoBehaviour
         state = E_State.WaitForName;
     }
     
-    public void StartRecPlayerName()
+    public IEnumerator StartRecPlayerName()
     {
-        audioSource.PlayOneShot(audioStartRecButton);
+        if (audioStartRecButton) audioSource.PlayOneShot(audioStartRecButton);
+        yield return new WaitForSeconds(audioStartRecButton.length);
         state = E_State.SayingName;
         recordedClip.StartRecording();
     }
@@ -105,36 +109,40 @@ public class GameManager : MonoBehaviour
         playersName[actualPlayer] = recordedClip.StopRecording();
         
         state = E_State.WeHaveNameDoNext;
-        audioSource.PlayOneShot(audioAfterName);
-        yield return new WaitForSeconds(audioAfterName.length);
+        if (audioAfterName) audioSource.PlayOneShot(audioAfterName);
+        yield return new WaitForSeconds(audioAfterName.length + 0.5f);
         
         // case other players and have to play audio first obj
         if (actualPlayer > 0)
         {
             audioSource.PlayOneShot(playerAudioButton[actualPlayer - 1][0]);
-            yield return new WaitForSeconds(playerAudioButton[actualPlayer - 1][0].length);
+            state = E_State.WaitChooseObject;
+            Debug.Log("HIIIIIIIIIIIIIII");
         }
-        state = E_State.WaitChooseObject;
+        else state = E_State.WaitChooseObject;
     }
     
-    public void StartRecChooseObject()
+    public IEnumerator StartRecChooseObject()
     {
-        audioSource.PlayOneShot(audioStartRecButton);
+        if (audioStartRecButton) audioSource.PlayOneShot(audioStartRecButton);
+        yield return new WaitForSeconds(audioStartRecButton.length - 0.5f);
         state = E_State.RecObjectSound;
         recordedClip.StartRecording();
     }
 
     public void StopRecChooseObject(int button)
     {
-        audioSource.PlayOneShot(audioStopRecButton);
+        if (audioStopRecButton) audioSource.PlayOneShot(audioStopRecButton);
         
         playerAudioButton[actualPlayer][buttonsSelected] = recordedClip.StopRecording();
         playerButton[actualPlayer][buttonsSelected] = button;
+        Debug.Log("le joueur " + actualPlayer + " a associé le bouton " + playerButton[actualPlayer][buttonsSelected]);
+        
         buttonsSelected++;
 
         if (buttonsSelected >= 4)
         {
-            PlayerFinished();
+            StartCoroutine(PlayerFinished());
         }
 
         else
@@ -143,20 +151,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PlayerFinished()
+    private IEnumerator PlayerFinished()
     {
-        if (actualPlayer >= 3)
+        state = E_State.YouCanLeave;
+        if (audioHaveSelectedAllObject)
         {
-            GameFinished();
-        }
-        else
-        {
-            //ask to leave the room
+            audioSource.PlayOneShot(audioHaveSelectedAllObject);
+            yield return new WaitForSeconds(audioHaveSelectedAllObject.length);
+            state = actualPlayer >= 3 ? E_State.WaitEndScreen : E_State.None;
         }
     }
 
-    private void GameFinished()
+    public void GameFinished()
     {
-        
+        state = E_State.EndScreen;
+        //FinDePartie.instance.
     }
 }

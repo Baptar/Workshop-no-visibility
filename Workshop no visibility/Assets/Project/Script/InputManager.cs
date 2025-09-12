@@ -32,6 +32,9 @@ public class InputManager : MonoBehaviour
             case E_State.RecObjectSound:
                 gameManager.StopRecChooseObject(index);
                 break;
+            case E_State.WaitEndScreen:
+                gameManager.GameFinished();
+                break;
         }
     }
 
@@ -44,10 +47,10 @@ public class InputManager : MonoBehaviour
         switch (gameManager.state)
         {
             case E_State.WaitForName:
-                gameManager.StartRecPlayerName();
+                StartCoroutine(gameManager.StartRecPlayerName());
                 break;
             case E_State.WaitChooseObject:
-                gameManager.StartRecChooseObject();
+                StartCoroutine(gameManager.StartRecChooseObject());
                 break;
         }
     }
